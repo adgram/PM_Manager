@@ -45,7 +45,7 @@
 (defun *PM:GET-SUBDIRS (dir / sub sub-path result)
   (setq result (list dir))
   (foreach d (vl-directory-files dir)
-    (if (and (/= d ".") (/= d ".."))
+    (if (and (/= d ".") (/= d "..") (not (wcmatch d "lib-*")))
       (progn
         (setq sub-path (strcat dir "\\" d))
         (if (vl-file-directory-p sub-path)

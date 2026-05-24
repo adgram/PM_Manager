@@ -6,7 +6,7 @@
 
 (defun c:AddVertex (/ a b e h l n p r w x z)
   (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\library\\"))
+    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
   )
   (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
   (or *PM-Entity-Loaded* (load (strcat *PM-LibDir* "PM_Entity")))

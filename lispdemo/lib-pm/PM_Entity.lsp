@@ -83,4 +83,24 @@
 
   (entmod updated)
 )
+
+;; 读取 DXF 组码值
+;; code: 组码号, entity: 图元名或 DXF 关联表
+;; 返回: 组码值或 nil
+(defun PM:GetDXF (code entity / data)
+  (setq data (if (= (type entity) 'ENAME) (entget entity) entity))
+  (cdr (assoc code data))
+)
+
+;; 写入 DXF 组码值
+;; code: 组码号, value: 新值, entity: 图元名或 DXF 关联表
+;; 返回: 更新后的 DXF 表（entity 为图元名时自动 entmod）
+(defun PM:PutDXF (code value entity / data result)
+  (setq data (if (= (type entity) 'ENAME) (entget entity) entity))
+  (setq result (subst (cons code value) (assoc code data) data))
+  (if (= (type entity) 'ENAME)
+    (entmod result)
+    result
+  )
+)
 )

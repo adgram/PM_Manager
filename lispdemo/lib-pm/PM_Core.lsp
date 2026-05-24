@@ -101,3 +101,22 @@
   (eval (list 'defun 'PM:AcDoc 'nil (vla-get-activedocument (vlax-get-acad-object))))
   (PM:AcDoc)
 )
+
+;; 带错误保护的选择集创建
+;; msg: 提示字符串或 nil, filter: DXF 过滤表或 nil
+;; 返回: 选择集或 nil（失败/取消）
+(defun PM:SSGet (msg filter / sel)
+  (if (vl-catch-all-error-p
+        (setq sel
+          (cond
+            ((and msg filter) (vl-catch-all-apply 'ssget (list msg filter)))
+            (msg             (vl-catch-all-apply 'ssget (list msg)))
+            (filter          (vl-catch-all-apply 'ssget (list filter)))
+            (t               (vl-catch-all-apply 'ssget nil))
+          )
+        )
+     )
+    (progn (princ "\nPM:SSGet 错误: 选择失败") nil)
+    sel
+  )
+)

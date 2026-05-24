@@ -5,7 +5,7 @@
 
 (defun c:SumArea (/ *error* old-cmdecho selection i object total-area area-obj entity-data entity-type obj-list radius area)
   (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\library\\"))
+    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
   )
   (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
   (or *PM-Entity-Loaded* (load (strcat *PM-LibDir* "PM_Entity")))

@@ -25,7 +25,7 @@
 
 (defun PM:EnsureLib ()
   (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\library\\"))
+    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
   )
   (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
   (or *PM-Block-Loaded* (load (strcat *PM-LibDir* "PM_Block")))

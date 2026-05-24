@@ -8,7 +8,7 @@
 
 (defun C:AutoCorrect (/ *DOC Ent I Locks BasePt Sel str TOL Data filter *error*_Old *error*_New)
   (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\library\\"))
+    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
   )
   (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
   (or *PM-Layer-Loaded* (load (strcat *PM-LibDir* "PM_Layer")))

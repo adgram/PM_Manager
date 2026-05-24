@@ -7,7 +7,7 @@
 ## 文件结构
 
 ```
-library/
+lib-pm/
 ├── init.lsp       ← 入口，加载所有模块
 ├── PM_Core.lsp    ← 核心基础
 ├── PM_Text.lsp    ← 文字操作
@@ -38,7 +38,7 @@ library/
 在命令文件中只需加载入口：
 
 ```lisp
-(load "library/init")      ; 加载所有模块
+(load "lib-pm/init")      ; 加载所有模块
 ```
 
 之后即可调用任意库函数：

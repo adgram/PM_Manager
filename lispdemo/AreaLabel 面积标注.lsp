@@ -5,7 +5,7 @@
 
 (defun c:AreaLabel (/ ptBoundary boundaryObj areaVal areaStr autoHt textHt textPt)
   (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\library\\"))
+    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
   )
   (or *PM-Text-Loaded* (load (strcat *PM-LibDir* "PM_Text")))
 

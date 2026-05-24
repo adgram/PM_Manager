@@ -5,7 +5,7 @@
 
 (defun c:CountBlock (/ textSize offset userOffset sel entData blockName blockCount ptName ptCount)
   (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\library\\"))
+    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
   )
   (or *PM-Text-Loaded* (load (strcat *PM-LibDir* "PM_Text")))
   (or *PM-Block-Loaded* (load (strcat *PM-LibDir* "PM_Block")))
