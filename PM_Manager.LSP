@@ -67,8 +67,8 @@
       (while (setq line (read-line f))
         (setq line (*PM:TRIM line))
         (cond
-          ((wcmatch line "*[Pp]aths*") (setq mode 'paths))
-          ((wcmatch line "*[Aa]uto*")  (setq mode 'auto))
+          ((= (strcase line) "[PATHS]") (setq mode 'paths))
+          ((= (strcase line) "[AUTO]")  (setq mode 'auto))
           ((wcmatch line ";*")        ) 
           ((= mode 'paths)
             (if (/= "" line) (setq cfg-dirs (cons line cfg-dirs)))
