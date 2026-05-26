@@ -7,11 +7,8 @@
 ;;;*************************************************************
 
 (defun C:AutoCorrect (/ *DOC Ent I Locks BasePt Sel str TOL Data filter *error*_Old *error*_New)
-  (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
-  )
-  (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
-  (or *PM-Layer-Loaded* (load (strcat *PM-LibDir* "PM_Layer")))
+  (or *PM-Core-Loaded* (load "lib-pm/PM_Core"))
+  (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
 
   ;;自定义错误处理
   (defun *error*_New (msg)
@@ -260,11 +257,10 @@
 ;;;对话框为动态生成，参数可以保存。
 ;;;*************************************************************
 (defun C:SetByDCL(/ catchit)
-  (setq catchit (VL-CATCH-ALL-APPLY 'dcl_load))
+  (setq catchit (VL-CATCH-ALL-APPLY 'dcl_load nil))
   (if (vl-catch-all-error-p catchit)
     (progn
-      (princ "\n错误信息:")
-      (princ (vl-catch-all-error-message catchit))
+      (princ (strcat "\n错误信息: " (vl-catch-all-error-message catchit)))
       nil
     )
     catchit
@@ -314,7 +310,7 @@
   (action_tile "GETTOL" "(done_dialog 2)")
   (foreach key data
     (and (cdr key) (set_tile (car key) (cdr key)))
-    (action_tile (car key)"(Action_DCL_Keys   )")
+    (action_tile (car key) "(Action_DCL_Keys $key $value $data)")
   )
 )
 

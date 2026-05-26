@@ -5,11 +5,9 @@
 (vl-load-com)
 
 (defun c:AddVertex (/ a b e h l n p r w x z)
-  (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
-  )
-  (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
-  (or *PM-Entity-Loaded* (load (strcat *PM-LibDir* "PM_Entity")))
+  (or *PM-Core-Loaded* (load "lib-pm/PM_Core"))
+  (or *PM-Entity-Loaded* (load "lib-pm/PM_Entity"))
+
   (while
     (progn (setq p (getpoint "\n请选择要添加顶点的位置: "))
       (cond
@@ -68,6 +66,6 @@
         )
         (princ "\n顶点已存在该位置")
       )
-  )
+    )
   (princ)
 )

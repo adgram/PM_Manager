@@ -2,6 +2,8 @@
 ;; 职责：实体面积计算、属性读取等
 ;; 依赖：PM_Core.lsp
 
+(setq *PM-Entity-Loaded* T)
+
 ;; 计算圆面积
 (defun PM:CircleArea (radius)
   (* pi radius radius)
@@ -31,12 +33,15 @@
 )
 
 ;; 获取曲线对象的长度
-(defun PM:GetCurveLength (objectEntity / length)
-  (if (vl-catch-all-error-p
-        (setq length
-              (vl-catch-all-apply
-                'vlax-curve-getdistatparam
-                (list objectEntity (vlax-curve-getendparam objectEntity)))))
+(defun PM:GetCurveLength (objectEntity / length end-param)
+  (if (or (null objectEntity)
+          (vl-catch-all-error-p
+            (setq end-param
+                  (vl-catch-all-apply 'vlax-curve-getendparam (list objectEntity))))
+          (vl-catch-all-error-p
+            (setq length
+                  (vl-catch-all-apply 'vlax-curve-getdistatparam
+                                      (list objectEntity end-param)))))
     nil
     (abs length)
   )
@@ -102,5 +107,4 @@
     (entmod result)
     result
   )
-)
 )

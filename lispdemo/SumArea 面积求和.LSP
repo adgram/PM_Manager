@@ -3,12 +3,10 @@
 
 (vl-load-com)
 
-(defun c:SumArea (/ *error* old-cmdecho selection i object total-area area-obj entity-data entity-type obj-list radius area)
-  (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
-  )
-  (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
-  (or *PM-Entity-Loaded* (load (strcat *PM-LibDir* "PM_Entity")))
+(defun c:SumArea (/ *error* old-cmdecho selection i object total-area area-obj entity-data entity-type obj-list radius area ins-pt)
+  (or *PM-Core-Loaded* (load "lib-pm/PM_Core"))
+  (or *PM-Entity-Loaded* (load "lib-pm/PM_Entity"))
+  (or *PM-Text-Loaded* (load "lib-pm/PM_Text"))
 
   (defun *error* (msg)
     (if old-cmdecho (setvar "cmdecho" old-cmdecho))
@@ -18,7 +16,7 @@
   (setq old-cmdecho (getvar "cmdecho"))
   (setvar "cmdecho" 0)
 
-  (princ "\n选择要计算面积的对象（支持多段线、圆、椭圆、样条曲线、面域、填充图案）: ")
+  (princ "\n选择要计算面积的对象（支持图形和文字）: ")
 
   (cond
     ((setq selection
@@ -31,6 +29,8 @@
                (0 . "SPLINE")
                (0 . "REGION")
                (0 . "HATCH")
+               (0 . "TEXT")
+               (0 . "MTEXT")
              (-4 . "OR>")
              ))
      )
@@ -45,6 +45,13 @@
              i (1+ i))
 
        (cond
+         ((member entity-type '("TEXT" "MTEXT"))
+          (setq area-obj (PM:ValueFromText (cdr (assoc 1 entity-data)) "area"))
+          (if area-obj
+            (setq total-area (+ total-area area-obj))
+            (princ (strcat "\n警告: 无法解析文字中的数值。"))
+          ))
+
          ((= entity-type "CIRCLE")
           (setq radius (cdr (assoc 40 entity-data)))
           (setq area-obj (PM:CircleArea radius)))
@@ -56,14 +63,16 @@
           (setq area-obj (PM:GetObjectArea object)))
        )
 
-       (if (and area-obj (> (abs area-obj) 1e-6))
-         (progn
-           (setq area-obj (abs area-obj))
-           (setq total-area (+ total-area area-obj))
-           (setq obj-list (cons (cons entity-type area-obj) obj-list))
-         )
-         (princ (strcat "\n注意: " entity-type " 类型对象的面积为零或无法计算"))
-       )
+        (if (and area-obj (> (abs area-obj) 1e-6))
+          (progn
+            (setq area-obj (abs area-obj))
+            (setq total-area (+ total-area area-obj))
+            (if (not (member entity-type '("TEXT" "MTEXT")))
+              (setq obj-list (cons (cons entity-type area-obj) obj-list))
+            )
+          )
+          (princ (strcat "\n注意: " entity-type " 类型对象的面积为零或无法计算"))
+        )
      )
 
      (princ "\n")
@@ -89,22 +98,21 @@
        )
      )
 
-     (PM:PrintLine "-" 50)
-     (princ (strcat "总计面积 = " (rtos total-area 2 4) "\n"))
-     (princ (strcat "对象总数 = " (itoa (sslength selection)) "\n"))
-     (PM:PrintLine "=" 50)
+      (PM:PrintLine "-" 50)
+      (princ (strcat "总计面积 = " (rtos total-area 2 4) "\n"))
+      (princ (strcat "对象总数 = " (itoa (sslength selection)) "\n"))
+      (PM:PrintLine "=" 50)
 
-     (alert (strcat "面积计算完成!\n\n"
-                    "总面积: " (rtos total-area 2 4) "\n"
-                    "对象数量: " (itoa (sslength selection))))
+      (if (setq ins-pt (getpoint "\n请点击标注位置: "))
+        (PM:MakeScaledText ins-pt (strcat "面积:" (rtos (PM:ConvertArea total-area) 2 4) (PM:GetUnitSuffix "area")))
+      )
 
-     (setvar "cmdecho" old-cmdecho)
-     (princ))
+      (setvar "cmdecho" old-cmdecho)
+      (princ))
 
     (t
      (princ "\n未选择任何对象或选择无效。")
      (setvar "cmdecho" old-cmdecho)
      (princ)))
-
   (princ)
 )

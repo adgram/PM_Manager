@@ -3,32 +3,34 @@
 
 (vl-load-com)
 
-(defun c:CountBlock (/ textSize offset userOffset sel entData blockName blockCount ptName ptCount)
-  (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
-  )
-  (or *PM-Text-Loaded* (load (strcat *PM-LibDir* "PM_Text")))
-  (or *PM-Block-Loaded* (load (strcat *PM-LibDir* "PM_Block")))
+(defun c:CountBlock (/ offset userOffset sel i entData blockName names blockCount pt)
+  (or *PM-Core-Loaded* (load "lib-pm/PM_Core"))
+  (or *PM-Text-Loaded* (load "lib-pm/PM_Text"))
+  (or *PM-Block-Loaded* (load "lib-pm/PM_Block"))
 
   (princ "\n=== 图块统计标注 ===\n")
 
-  (setq textSize (PM:GetTextSize))
-
   (setq offset 0)
-  (if (setq userOffset (getint "请输入数量偏移量 <0>: "))
+  (if (setq userOffset (getint "\n请输入数量偏移量 <0>: "))
     (setq offset userOffset)
   )
 
-  (while (and (princ "\n请选择要统计的块...") (setq sel (ssget)))
-    (setq entData (entget (ssname sel 0)))
-    (setq blockName (cdr (assoc 2 entData)))
-    (setq blockCount (+ (PM:CountBlockByName blockName) offset))
-    (if (setq ptName (getpoint (strcat "\n块名 \"" blockName "\" 的标注位置: ")))
-      (PM:MakeText ptName textSize blockName)
+  (while (progn (princ "\n请选择要统计的块...") (setq sel (ssget '((0 . "INSERT")))))
+    (setq names nil)
+    (repeat (setq i (sslength sel))
+      (setq entData (entget (ssname sel (setq i (1- i)))))
+      (setq blockName (cdr (assoc 2 entData)))
+      (if (not (member blockName names))
+        (setq names (cons blockName names))
+      )
     )
-    (if (setq ptCount (getpoint (strcat "\n数量 " (itoa blockCount) " 的标注位置: ")))
-      (PM:MakeText ptCount textSize (itoa blockCount))
+    (foreach blockName names
+      (setq blockCount (+ (PM:CountBlockByName blockName) offset))
+      (if (setq pt (getpoint (strcat "\n\"" blockName "\" = " (itoa blockCount) " 个，标注位置: ")))
+        (PM:MakeScaledText pt (strcat blockName " × " (itoa blockCount)))
+      )
     )
   )
+
   (princ)
 )

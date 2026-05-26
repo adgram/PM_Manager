@@ -120,3 +120,153 @@
     sel
   )
 )
+
+;; 单位换算系统
+;; 模式格式: "图纸单位-标注单位"，如 "mm-m" 表示图纸 mm、标注 m
+(if (not (member *PM:Unit-Mode* '("mm-mm" "m-m" "mm-m" "m-mm")))
+  (setq *PM:Unit-Mode* "mm-m")
+)
+
+(defun PM:SetUnitMode (mode / valid)
+  (setq valid '("mm-mm" "m-m" "mm-m" "m-mm"))
+  (if (member mode valid)
+    (progn
+      (setq *PM:Unit-Mode* mode)
+      (princ (strcat "\n[PM] 单位模式已设为 " mode))
+    )
+    (princ (strcat "\n[PM] 无效模式，可选: mm-mm, m-m, mm-m, m-mm"))
+  )
+  (princ)
+)
+
+(defun C:PMUnit (/ mode)
+  (princ (strcat "\n当前单位模式: " *PM:Unit-Mode*))
+  (princ "\n   mm-mm  图纸:毫米 → 标注:毫米")
+  (princ "\n   m-m    图纸:米   → 标注:米")
+  (princ "\n   mm-m   图纸:毫米 → 标注:米")
+  (princ "\n   m-mm   图纸:米   → 标注:毫米")
+  (if (setq mode (getstring "\n请输入新模式: "))
+    (PM:SetUnitMode mode)
+  )
+  (princ)
+)
+
+(defun PM:ConvertLength (val)
+  (* val
+    (cond
+      ((= *PM:Unit-Mode* "mm-mm") 1)
+      ((= *PM:Unit-Mode* "m-m")   1)
+      ((= *PM:Unit-Mode* "mm-m")  0.001)
+      ((= *PM:Unit-Mode* "m-mm")  1000)
+      (t 1)
+    )
+  )
+)
+
+(defun PM:ConvertLengthRev (val)
+  (* val
+    (cond
+      ((= *PM:Unit-Mode* "mm-mm") 1)
+      ((= *PM:Unit-Mode* "m-m")   1)
+      ((= *PM:Unit-Mode* "mm-m")  1000)
+      ((= *PM:Unit-Mode* "m-mm")  0.001)
+      (t 1)
+    )
+  )
+)
+
+(defun PM:ConvertArea (val)
+  (* val
+    (cond
+      ((= *PM:Unit-Mode* "mm-mm") 1)
+      ((= *PM:Unit-Mode* "m-m")   1)
+      ((= *PM:Unit-Mode* "mm-m")  1e-6)
+      ((= *PM:Unit-Mode* "m-mm")  1e6)
+      (t 1)
+    )
+  )
+)
+
+(defun PM:ConvertAreaRev (val)
+  (* val
+    (cond
+      ((= *PM:Unit-Mode* "mm-mm") 1)
+      ((= *PM:Unit-Mode* "m-m")   1)
+      ((= *PM:Unit-Mode* "mm-m")  1e6)
+      ((= *PM:Unit-Mode* "m-mm")  1e-6)
+      (t 1)
+    )
+  )
+)
+
+(defun PM:GetUnitSuffix (type / ann-unit)
+  (setq ann-unit
+    (cond
+      ((member *PM:Unit-Mode* '("mm-mm" "m-mm")) "mm")
+      ((member *PM:Unit-Mode* '("m-m" "mm-m"))   "m")
+      (t "mm")
+    )
+  )
+  (if (= type "area")
+    (strcat ann-unit "²")
+    ann-unit
+  )
+)
+
+;; 从字符串中提取第一个数值
+(defun PM:ParseNumber (str / i len c num-str started dot)
+  (setq i 0 len (strlen str) num-str "" started nil dot nil)
+  (while (< i len)
+    (setq c (substr str (setq i (1+ i)) 1))
+    (cond
+      ((wcmatch c "#")
+       (setq num-str (strcat num-str c) started T))
+      ((and (= c ".") started (not dot))
+       (setq num-str (strcat num-str c) dot T))
+      (started
+       (setq i len))
+    )
+  )
+  (if started (distof num-str) nil)
+)
+
+;; 从文字内容提取数值并换算为图纸单位
+;; type: "length" 或 "area"
+(defun PM:ValueFromText (str type / val detected dwg-unit factor s)
+  (setq val (PM:ParseNumber str))
+  (if (null val) (setq val nil))
+  (if val
+    (progn
+      (setq s (strcase str))
+      (setq detected
+        (if (wcmatch s "*MM*") "mm"
+          (if (wcmatch s "*M*") "m" nil)
+        )
+      )
+      (setq dwg-unit
+        (if (wcmatch *PM:Unit-Mode* "mm-*") "mm" "m")
+      )
+      (if detected
+        (* val
+          (cond
+            ((= type "length")
+             (cond
+               ((and (= detected "mm") (= dwg-unit "mm")) 1)
+               ((and (= detected "m")  (= dwg-unit "mm")) 1000)
+               ((and (= detected "mm") (= dwg-unit "m"))  0.001)
+               ((and (= detected "m")  (= dwg-unit "m"))  1)
+             ))
+            ((= type "area")
+             (cond
+               ((and (= detected "mm") (= dwg-unit "mm")) 1)
+               ((and (= detected "m")  (= dwg-unit "mm")) 1e6)
+               ((and (= detected "mm") (= dwg-unit "m"))  1e-6)
+               ((and (= detected "m")  (= dwg-unit "m"))  1)
+             ))
+          )
+        )
+        val
+      )
+    )
+  )
+)

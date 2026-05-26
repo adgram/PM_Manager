@@ -3,12 +3,9 @@
 
 (vl-load-com)
 
-(defun c:FlattenZ (/ *error* old-cmdecho sel i count)
-  (or *PM-LibDir*
-    (setq *PM-LibDir* (strcat (vl-filename-directory (getvar "lastloaded")) "\\lib-pm\\"))
-  )
-  (or *PM-Core-Loaded* (load (strcat *PM-LibDir* "PM_Core")))
-  (or *PM-Entity-Loaded* (load (strcat *PM-LibDir* "PM_Entity")))
+(defun c:FlattenZ (/ *error* old-cmdecho sel i)
+  (or *PM-Core-Loaded* (load "lib-pm/PM_Core"))
+  (or *PM-Entity-Loaded* (load "lib-pm/PM_Entity"))
 
   (defun *error* (msg)
     (if old-cmdecho (setvar "cmdecho" old-cmdecho))
@@ -21,12 +18,10 @@
   (princ "\n请选择要归零的实体: ")
   (if (setq sel (ssget))
     (progn
-      (setq count 0)
-      (repeat (sslength sel)
-        (PM:FlattenEntity (ssname sel count))
-        (setq count (1+ count))
+      (repeat (setq i (sslength sel))
+        (PM:FlattenEntity (ssname sel (setq i (1- i))))
       )
-      (princ (strcat "\n已完成 " (itoa count) " 个实体的 Z 坐标归零"))
+      (princ (strcat "\n已完成 " (itoa (sslength sel)) " 个实体的 Z 坐标归零"))
     )
     (princ "\n未选择任何实体")
   )
