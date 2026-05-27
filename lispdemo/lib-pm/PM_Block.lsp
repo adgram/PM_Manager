@@ -2,6 +2,9 @@
 ;; 职责：所有与图块（Block）相关的查询、统计、编辑函数
 ;; 依赖：PM_Core.lsp
 
+(vl-load-com)
+(setq *PM-Block-Loaded* T)
+
 ;; 统计全图中指定块名的所有实例数量
 (defun PM:CountBlockByName (blockName / allInst)
   (if (setq allInst (ssget "X" (list (cons 2 blockName))))
