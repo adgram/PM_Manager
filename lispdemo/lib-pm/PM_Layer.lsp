@@ -37,6 +37,39 @@
   )
 )
 
+;; 打开并解冻所有图层
+(defun PM:TurnOnAllLayers (/ layers doc)
+  (setq doc (vla-get-activedocument (vlax-get-acad-object)))
+  (setq layers (vla-get-layers doc))
+  (vlax-for x layers
+    (vla-put-layeron x :vlax-true)
+    (vla-put-freeze x :vlax-false)
+  )
+)
+
+;; 关闭指定图层名列表
+(defun PM:TurnOffLayers (nameList / layers doc)
+  (setq doc (vla-get-activedocument (vlax-get-acad-object)))
+  (setq layers (vla-get-layers doc))
+  (foreach name nameList
+    (if (tblsearch "LAYER" name)
+      (vla-put-layeron (vla-item layers name) :vlax-false)
+    )
+  )
+)
+
+;; 关闭指定列表之外的所有图层
+(defun PM:TurnOffOtherLayers (keepList / layers doc upperList)
+  (setq doc (vla-get-activedocument (vlax-get-acad-object)))
+  (setq layers (vla-get-layers doc))
+  (setq upperList (mapcar 'strcase keepList))
+  (vlax-for x layers
+    (if (not (member (strcase (vla-get-name x)) upperList))
+      (vla-put-layeron x :vlax-false)
+    )
+  )
+)
+
 ;; 解锁所有图层，返回原锁定图层列表
 (defun PM:UnlockAllLayers (*DOC / locks)
   (vlax-for x (vla-get-layers *DOC)

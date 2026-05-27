@@ -1,6 +1,6 @@
 ;; LayerTool.LSP - 图层管理工具
-;; 命令：PMLayer / PMLayerCreate / PMLayerQuick
-;; 功能：创建图层、切换当前图层、快速切换预设图层
+;; 命令：PMLayer / PMLayerCreate / PMLayerQuick / PMLayerOnAll / PMLayerOff / PMLayerOffOthers
+;; 功能：创建图层、切换当前图层、快速切换预设图层、图层全开、关闭图层、关闭其他图层
 ;; 依赖：lib-pm/PM_Layer.lsp
 
 (vl-load-com)
@@ -75,6 +75,58 @@
        )
        (princ "\n无效编号")
      )
+    )
+  )
+  (princ)
+)
+
+(defun c:PMLayerOnAll nil
+  (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
+  (princ "\n=== 图层全开 ===\n")
+  (PM:TurnOnAllLayers)
+  (princ "所有图层已打开并解冻")
+  (princ)
+)
+
+(defun c:PMLayerOff (/ sel i name layerNames)
+  (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
+  (princ "\n=== 关闭图层 ===\n")
+  (setq sel (ssget "_I"))
+  (if (null sel)
+    (setq sel (ssget))
+  )
+  (if sel
+    (progn
+      (repeat (setq i (sslength sel))
+        (setq name (cdr (assoc 8 (entget (ssname sel (setq i (1- i)))))))
+        (if (not (member name layerNames))
+          (setq layerNames (cons name layerNames))
+        )
+      )
+      (PM:TurnOffLayers layerNames)
+      (princ (strcat "已关闭图层: " (apply 'strcat (mapcar '(lambda (x) (strcat " " x)) layerNames))))
+    )
+  )
+  (princ)
+)
+
+(defun c:PMLayerOffOthers (/ sel i name layerNames)
+  (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
+  (princ "\n=== 关闭其他图层 ===\n")
+  (setq sel (ssget "_I"))
+  (if (null sel)
+    (setq sel (ssget (strcat "\n选择要保留的图元")))
+  )
+  (if sel
+    (progn
+      (repeat (setq i (sslength sel))
+        (setq name (cdr (assoc 8 (entget (ssname sel (setq i (1- i)))))))
+        (if (not (member name layerNames))
+          (setq layerNames (cons name layerNames))
+        )
+      )
+      (PM:TurnOffOtherLayers layerNames)
+      (princ (strcat "已保留图层: " (apply 'strcat (mapcar '(lambda (x) (strcat " " x)) layerNames))))
     )
   )
   (princ)
