@@ -1,4 +1,5 @@
 ;; LayerTool.LSP - 图层管理工具
+;; 命令：PMLayer / PMLayerCreate / PMLayerQuick
 ;; 功能：创建图层、切换当前图层、快速切换预设图层
 ;; 依赖：lib-pm/PM_Layer.lsp
 
@@ -21,7 +22,7 @@
   )
 )
 
-(defun c:PML (/ name)
+(defun c:PMLayer (/ name)
   (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
   (princ "\n=== 切换图层 ===\n")
   (if (/= (setq name (getstring "\n请输入图层名称: ")) "")
@@ -33,7 +34,7 @@
   (princ)
 )
 
-(defun c:PMCL (/ name color)
+(defun c:PMLayerCreate (/ name color)
   (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
   (princ "\n=== 创建图层 ===\n")
   (if (/= (setq name (getstring "\n图层名称: ")) "")
@@ -48,7 +49,7 @@
   (princ)
 )
 
-(defun c:PMQ (/ i n name)
+(defun c:PMLayerQuick (/ i n name)
   (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
   (princ "\n=== 快速切换图层 ===\n")
   (setq i 0)
