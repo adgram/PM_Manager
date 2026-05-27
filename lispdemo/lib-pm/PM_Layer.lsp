@@ -85,10 +85,11 @@
 )
 
 ;; 打开所有图层
-(defun PM:TurnOnAllLayers (/ layers doc)
+(defun PM:TurnOnAllLayers (/ layers doc layerList)
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))
   (setq layers (vla-get-layers doc))
-  (vlax-for x layers
+  (vlax-for x layers (setq layerList (cons x layerList)))
+  (foreach x layerList
     (if (not (vl-string-search "|" (vla-get-name x)))
       (vl-catch-all-apply 'vla-put-layeron (list x :vlax-true))
     )
@@ -96,10 +97,11 @@
 )
 
 ;; 解冻所有图层
-(defun PM:ThawAllLayers (/ layers doc)
+(defun PM:ThawAllLayers (/ layers doc layerList)
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))
   (setq layers (vla-get-layers doc))
-  (vlax-for x layers
+  (vlax-for x layers (setq layerList (cons x layerList)))
+  (foreach x layerList
     (if (not (vl-string-search "|" (vla-get-name x)))
       (vl-catch-all-apply 'vla-put-freeze (list x :vlax-false))
     )
@@ -118,11 +120,12 @@
 )
 
 ;; 关闭指定列表之外的所有图层
-(defun PM:TurnOffOtherLayers (keepList / layers doc upperList)
+(defun PM:TurnOffOtherLayers (keepList / layers doc upperList layerList)
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))
   (setq layers (vla-get-layers doc))
   (setq upperList (mapcar 'strcase keepList))
-  (vlax-for x layers
+  (vlax-for x layers (setq layerList (cons x layerList)))
+  (foreach x layerList
     (if (and (not (vl-string-search "|" (vla-get-name x)))
              (not (member (strcase (vla-get-name x)) upperList))
         )
