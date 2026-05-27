@@ -10,7 +10,7 @@
 1. 输入 `OPTIONS` 命令
 2. 切换到 **文件** 选项卡
 3. 展开 **支持文件搜索路径**
-4. 点击 **添加** → **浏览**，选择 `D:\Program\CAD开发\AutoCAD\lisp库\PM_Manager\lispdemo`
+4. 点击 **添加** → **浏览**，选择 `.\PM_Manager\lispdemo`
 5. 点击 **确定** 保存
 
 ## 文件结构
