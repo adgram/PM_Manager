@@ -37,12 +37,20 @@
   )
 )
 
-;; 打开并解冻所有图层
+;; 打开所有图层
 (defun PM:TurnOnAllLayers (/ layers doc)
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))
   (setq layers (vla-get-layers doc))
   (vlax-for x layers
     (vla-put-layeron x :vlax-true)
+  )
+)
+
+;; 解冻所有图层
+(defun PM:ThawAllLayers (/ layers doc)
+  (setq doc (vla-get-activedocument (vlax-get-acad-object)))
+  (setq layers (vla-get-layers doc))
+  (vlax-for x layers
     (vla-put-freeze x :vlax-false)
   )
 )

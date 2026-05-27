@@ -1,6 +1,6 @@
 ;; LayerTool.LSP - 图层管理工具
-;; 命令：PMLayer / PMLayerCreate / PMLayerQuick / PMLayerOnAll / PMLayerOff / PMLayerOffOthers
-;; 功能：创建图层、切换当前图层、快速切换预设图层、图层全开、关闭图层、关闭其他图层
+;; 命令：PMLayer / PMLayerCreate / PMLayerQuick / PMLayerOnAll / PMLayerThawAll / PMLayerOff / PMLayerOffOthers
+;; 功能：创建图层、切换当前图层、快速切换预设图层、图层全开、解冻所有图层、关闭图层、关闭其他图层
 ;; 依赖：lib-pm/PM_Layer.lsp
 
 (vl-load-com)
@@ -84,7 +84,15 @@
   (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
   (princ "\n=== 图层全开 ===\n")
   (PM:TurnOnAllLayers)
-  (princ "所有图层已打开并解冻")
+  (princ "所有图层已打开")
+  (princ)
+)
+
+(defun c:PMLayerThawAll nil
+  (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
+  (princ "\n=== 解冻所有图层 ===\n")
+  (PM:ThawAllLayers)
+  (princ "所有图层已解冻")
   (princ)
 )
 
