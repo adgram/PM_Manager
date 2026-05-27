@@ -89,7 +89,9 @@
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))
   (setq layers (vla-get-layers doc))
   (vlax-for x layers
-    (vla-put-layeron x :vlax-true)
+    (if (not (vl-string-search "|" (vla-get-name x)))
+      (vl-catch-all-apply 'vla-put-layeron (list x :vlax-true))
+    )
   )
 )
 
@@ -98,7 +100,9 @@
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))
   (setq layers (vla-get-layers doc))
   (vlax-for x layers
-    (vla-put-freeze x :vlax-false)
+    (if (not (vl-string-search "|" (vla-get-name x)))
+      (vl-catch-all-apply 'vla-put-freeze (list x :vlax-false))
+    )
   )
 )
 
@@ -107,8 +111,8 @@
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))
   (setq layers (vla-get-layers doc))
   (foreach name nameList
-    (if (tblsearch "LAYER" name)
-      (vla-put-layeron (vla-item layers name) :vlax-false)
+    (if (and (tblsearch "LAYER" name) (not (vl-string-search "|" name)))
+      (vl-catch-all-apply 'vla-put-layeron (list (vla-item layers name) :vlax-false))
     )
   )
 )
@@ -119,8 +123,10 @@
   (setq layers (vla-get-layers doc))
   (setq upperList (mapcar 'strcase keepList))
   (vlax-for x layers
-    (if (not (member (strcase (vla-get-name x)) upperList))
-      (vla-put-layeron x :vlax-false)
+    (if (and (not (vl-string-search "|" (vla-get-name x)))
+             (not (member (strcase (vla-get-name x)) upperList))
+        )
+      (vl-catch-all-apply 'vla-put-layeron (list x :vlax-false))
     )
   )
 )
