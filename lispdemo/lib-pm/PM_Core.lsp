@@ -1,4 +1,4 @@
-;; PM_Core.lsp - 核心基础函数
+﻿;; PM_Core.lsp - 核心基础函数
 ;; 职责：通用基础设施，不依赖其他模块
 
 (setq *PM-Core-Loaded* T)

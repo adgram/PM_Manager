@@ -1,4 +1,4 @@
-(vl-load-com)
+﻿(vl-load-com)
 
 ;; PM_Manager.lsp - AutoCAD 插件管理器 v1.0.0
 

@@ -1,4 +1,4 @@
-;; AreaLabel.lsp - 面积标注工具
+﻿;; AreaLabel.lsp - 面积标注工具
 ;; 在封闭区域内点选后自动标注面积
 
 (vl-load-com)

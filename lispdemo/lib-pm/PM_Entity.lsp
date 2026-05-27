@@ -1,4 +1,4 @@
-;; PM_Entity.lsp - 实体/图元操作函数
+﻿;; PM_Entity.lsp - 实体/图元操作函数
 ;; 职责：实体面积计算、属性读取等
 ;; 依赖：PM_Core.lsp
 

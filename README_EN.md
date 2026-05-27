@@ -1,4 +1,4 @@
-# ACAD-PM — AutoCAD Plugin Manager
+﻿# ACAD-PM — AutoCAD Plugin Manager
 
 > This documentation is bilingual. See [README.md](./README.md) for the full document with language toggle.
 

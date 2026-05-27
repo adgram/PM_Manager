@@ -1,4 +1,4 @@
-;; PM_Block.lsp - 块参照操作函数
+﻿;; PM_Block.lsp - 块参照操作函数
 ;; 职责：所有与图块（Block）相关的查询、统计、编辑函数
 ;; 依赖：PM_Core.lsp
 

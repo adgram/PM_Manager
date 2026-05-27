@@ -1,4 +1,4 @@
-;; CountBlock.LSP - 图块统计标注工具
+﻿;; CountBlock.LSP - 图块统计标注工具
 ;; 选择块参照后自动统计全图中同名块的数量并标注
 
 (vl-load-com)

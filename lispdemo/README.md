@@ -1,4 +1,4 @@
-# PM_Manager — AutoCAD 实用工具集
+﻿# PM_Manager — AutoCAD 实用工具集
 
 一组可直接通过 APPLOAD 加载的 AutoCAD LISP 工具。多数工具运行时自动加载 `lib-pm/` 库模块；`ChangeBlockBase` 为独立脚本，无需库支持。
 

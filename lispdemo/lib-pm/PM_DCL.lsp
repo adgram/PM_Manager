@@ -1,4 +1,4 @@
-;; PM_DCL.lsp - 动态 DCL 对话框生成
+﻿;; PM_DCL.lsp - 动态 DCL 对话框生成
 ;; 职责：运行时创建 DCL 临时文件、加载并显示对话框
 ;; 依赖：PM_Core.lsp
 ;; 使用示例：
