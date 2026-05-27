@@ -20,7 +20,10 @@ lib-pm/
 ├── PM_Core.lsp      ← 核心基础（单位换算、通用工具）
 ├── PM_Entity.lsp    ← 实体操作（面积、长度、DXF 读写）
 ├── PM_Text.lsp      ← 文字操作（创建、比例尺）
-└── PM_Block.lsp     ← 块操作
+├── PM_Layer.lsp     ← 图层操作（创建/切换/开关/冻结/锁定）
+├── PM_Block.lsp     ← 块操作
+├── PM_DCL.lsp       ← 动态 DCL 对话框生成
+└── PM_TArch.lsp     ← 天正工具集成
 ```
 
 ### 各文件职责
@@ -30,7 +33,10 @@ lib-pm/
 | **PM_Core.lsp** | 通用基础设施，不依赖其他模块 | `PM:ErrorHandler`, `PM:ValueFromText`, `PM:ConvertLength` |
 | **PM_Entity.lsp** | 实体/图元操作，依赖 PM_Core | `PM:GetCurveLength`, `PM:GetObjectArea`, `PM:GetDXF` |
 | **PM_Text.lsp** | 文字/标注相关，依赖 PM_Core | `PM:MakeText`, `PM:MakeScaledText`, `C:PMScale` |
+| **PM_Layer.lsp** | 图层创建/切换/开关/冻结/锁定 | `PM:CreateLayer`, `PM:SetLayerCurrent`, `PM:TurnOnAllLayers`, `PM:ThawAllLayers`, `PM:TurnOffLayers`, `PM:TurnOffOtherLayers`, `PM:CreateLayerWithProps`（支持真彩色和线型） |
 | **PM_Block.lsp** | 块参照相关 | `PM:CountBlockByName`, `PM:GetBlockName` |
+| **PM_DCL.lsp** | 动态 DCL 对话框生成 | `PM:DCLDialog` |
+| **PM_TArch.lsp** | 天正环境检测、读取出图比例 | `PM:TArchLoaded`, `PM:GetTArchScale` |
 
 ## 单位换算系统
 
