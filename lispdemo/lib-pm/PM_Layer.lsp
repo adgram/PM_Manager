@@ -37,6 +37,53 @@
   )
 )
 
+;; 设置图层真彩色（RGB）
+(defun PM:SetLayerTrueColor (layer rgb / r g b val elist)
+  (setq r (car rgb) g (cadr rgb) b (caddr rgb))
+  (setq val (+ (* r 65536) (* g 256) b))
+  (setq elist (entget (vlax-vla-object->ename layer)))
+  (if (assoc 420 elist)
+    (setq elist (subst (cons 420 val) (assoc 420 elist) elist))
+    (setq elist (append elist (list (cons 420 val))))
+  )
+  (entmod elist)
+)
+
+;; 加载线型（如未加载）
+(defun PM:LoadLinetype (name)
+  (if (not (tblsearch "LTYPE" name))
+    (vl-catch-all-apply
+      'vla-load
+      (list
+        (vla-get-linetypes (vla-get-activedocument (vlax-get-acad-object)))
+        name
+        "acad.lts"
+      )
+    )
+  )
+)
+
+;; 创建图层并设置颜色/线型
+;; color: nil=默认, 整数=ACI, 列表=RGB 真彩色
+(defun PM:CreateLayerWithProps (name color linetype / layer)
+  (if (not (tblsearch "LAYER" name))
+    (progn
+      (setq layer (PM:CreateLayer name))
+      (cond
+        ((listp color) (PM:SetLayerTrueColor layer color))
+        (color (vla-put-color layer color))
+      )
+      (if linetype
+        (progn
+          (PM:LoadLinetype linetype)
+          (vla-put-linetype layer linetype)
+        )
+      )
+      layer
+    )
+  )
+)
+
 ;; 打开所有图层
 (defun PM:TurnOnAllLayers (/ layers doc)
   (setq doc (vla-get-activedocument (vlax-get-acad-object)))

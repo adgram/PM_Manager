@@ -6,19 +6,21 @@
 (vl-load-com)
 
 ;; ======== 用户配置区 ========
-;; 快速切换预设图层列表（最多 9 个）
-;; 格式: (名称 颜色号)
+;; 快速切换预设图层列表
+;; 格式: (名称 颜色 线型)
+;;   颜色: nil=默认, 整数=ACI, 列表=(R G B)=真彩色
+;;   线型: nil=默认, 字符串=线型名
 (setq *PM:QuickLayers*
   '(
-    ("0"            7)
-    ("DIM"          3)
-    ("TEXT"         7)
-    ("HATCH"        8)
-    ("CENTER"       1)
-    ("HIDDEN"       2)
-    ("THICK"        4)
-    ("LIGHT"        5)
-    ("VIEWPORT"     6)
+    ("0"       7       nil)
+    ("DIM"     3       nil)
+    ("TEXT"    7       nil)
+    ("HATCH"   8       nil)
+    ("THIN"    9       nil)
+    ("DASH"    9       "DASH")
+    ("RED"     (165 30 30) nil)
+    ("GREEN"   3       nil)
+    ("YELLOW"  2       nil)
   )
 )
 
@@ -53,9 +55,9 @@
   (or *PM-Layer-Loaded* (load "lib-pm/PM_Layer"))
   (princ "\n=== 快速切换图层 ===\n")
   (setq i 0)
-  (foreach pair *PM:QuickLayers*
+  (foreach item *PM:QuickLayers*
     (setq i (1+ i))
-    (princ (strcat "\n  " (itoa i) ". " (car pair) " (颜色 " (itoa (cadr pair)) ")"))
+    (princ (strcat "\n  " (itoa i) ". " (car item)))
   )
   (princ (strcat "\n  Q. 自定义图层\n"))
   (setq n (getstring "\n请选择编号: "))
@@ -68,10 +70,10 @@
     ((setq i (atoi n))
      (if (and (> i 0) (<= i (length *PM:QuickLayers*)))
        (progn
-         (setq pair (nth (1- i) *PM:QuickLayers*))
-         (PM:CreateLayerWithColor (car pair) (cadr pair))
-         (setvar "CLAYER" (car pair))
-         (princ (strcat "\n当前图层: " (car pair)))
+         (setq item (nth (1- i) *PM:QuickLayers*))
+         (PM:CreateLayerWithProps (car item) (cadr item) (caddr item))
+         (setvar "CLAYER" (car item))
+         (princ (strcat "\n当前图层: " (car item)))
        )
        (princ "\n无效编号")
      )
