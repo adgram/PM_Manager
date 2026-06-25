@@ -1,4 +1,4 @@
-﻿﻿# PM_Manager — AutoCAD 实用工具集
+﻿# PM_Manager — AutoCAD 实用工具集
 
 一组可直接通过 APPLOAD 加载的 AutoCAD LISP 工具。多数工具运行时自动加载 `lib-pm/` 库模块；`ChangeBlockBase` 为独立脚本，无需库支持。
 
@@ -15,6 +15,9 @@
 | `AutoCorrect 顶点自动规整.LSP` | `AutoCorrect` | 将图元坐标/顶点归算到整数倍容差 |
 | `ChangeBlockBase 修改块基点.LSP` | `ChangeBasePoint` / `ChangeBasePointRetainPosition` | 修改块参照的基点（独立脚本，无需 lib-pm） |
 | `LayerTool 图层管理.LSP` | `PMLayer` / `PMLayerCreate` / `PMLayerQuick` / `PMLayerOnAll` / `PMLayerThawAll` / `PMLayerOff` / `PMLayerOffOthers` | 创建/切换图层、图层全开/解冻、关闭图层/关闭其他 |
+| `FloorToHeight 建筑层数转高度.LSP` | `FloorToHeight` | 将封闭多段线的厚度（层数）乘以3转为建筑高度 |
+| `BuildingOutline 建筑轮廓选取.LSP` | `BuildingOutline` | 选择同图层上封闭多段线建筑轮廓并高亮选取 |
+| `BuildingArea 建筑面积统计.LSP` | `BuildingArea` | 按层数统计封闭多段线轮廓的建筑面积并标注 |
 
 ## 前置要求
 
@@ -50,6 +53,9 @@ A collection of AutoCAD LISP tools loadable via `APPLOAD`. Most tools auto-load 
 | `AutoCorrect 顶点自动规整.LSP` | `AutoCorrect` | Snap entity coordinates/vertices to integer tolerance |
 | `ChangeBlockBase 修改块基点.LSP` | `ChangeBasePoint` / `ChangeBasePointRetainPosition` | Change block reference base point (standalone, no lib-pm) |
 | `LayerTool 图层管理.LSP` | `PMLayer` / `PMLayerCreate` / `PMLayerQuick` / `PMLayerOnAll` / `PMLayerThawAll` / `PMLayerOff` / `PMLayerOffOthers` | Create/switch layers; turn on/thaw all; turn off selected/others |
+| `FloorToHeight 建筑层数转高度.LSP` | `FloorToHeight` | Multiply closed polyline thickness (floors) by 3 to convert to building height |
+| `BuildingOutline 建筑轮廓选取.LSP` | `BuildingOutline` | Select and highlight closed polylines on the same layer as building outlines |
+| `BuildingArea 建筑面积统计.LSP` | `BuildingArea` | Calculate and annotate total building area from closed polylines by floor count |
 
 ## Prerequisites
 
